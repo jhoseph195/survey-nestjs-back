@@ -12,7 +12,35 @@ export class UserService {
     constructor(
       @InjectRepository(User)
       private usersRepository: Repository<User>,
-    ) {}
+    ) {
+        this.createUSerIfNotExist()
+    }
+
+    async createUSerIfNotExist() {
+        const user = await this.usersRepository.findOneBy({ id: 1 })
+
+        if (!user) {
+            await this.usersRepository.insert({
+                "id": 1,
+                "name": "Super Admin Survey",
+                "email": "admin@survey.com",
+                "password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+                "type": EType.SUPER_ADMIN,
+                "company": {"id": 1},
+                "isDeleted": false,
+            });
+        } else {
+            await this.usersRepository.update(1, {
+                "name": "Super Admin Survey",
+                "email": "admin@survey.com",
+                "password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+                "type": EType.SUPER_ADMIN,
+                "company": {"id": 1},
+                "isDeleted": false,
+            });
+
+        }
+    }
     
     async getUsers(@Req() req: Request, @Query() queryDTO: GetUsersDto) {
         const filters: any = {

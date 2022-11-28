@@ -12,8 +12,39 @@ export class CompanyService {
     constructor(
       @InjectRepository(Company)
       private companysRepository: Repository<Company>,
-    ) {}
-    
+    ) {
+        this.createCompanyIfNotExist()
+    }
+
+    async createCompanyIfNotExist() {
+        const company = await this.companysRepository.findOneBy({ id: 1 })
+
+        if (!company) {
+            await this.companysRepository.insert({
+                "id": 1,
+                "socialReason": "Survey SA de CV",
+                "business": "Tecnologías de la Información",
+                "email": "contacto@survey.com",
+                "phone": "3311223344",
+                "address": "COLON NO. 182 NO. B",
+                "neighborhood": "CENTRO, Jal",
+                "postalCode": "49000",
+                "isDeleted": false,
+            });
+        } else {
+            await this.companysRepository.update(1, {
+                "socialReason": "Survey SA de CV",
+                "business": "Tecnologías de la Información",
+                "email": "contacto@survey.com",
+                "phone": "3311223344",
+                "address": "COLON NO. 182 NO. B",
+                "neighborhood": "CENTRO, Jal",
+                "postalCode": "49000",
+                "isDeleted": false
+            });
+
+        }
+    }
     async getCompanys(@Req() req: Request, @Query() queryDTO: GetCompanysDto) {
         const filters: any = {
             where: {}

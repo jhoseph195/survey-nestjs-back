@@ -23,6 +23,8 @@ const core_1 = require("@nestjs/core");
 const session_validator_guard_1 = require("./guards/session-validator/session-validator.guard");
 const company_entity_1 = require("./entities/company.entity");
 const survey_entity_1 = require("./entities/survey.entity");
+const answer_entity_1 = require("./entities/answer.entity");
+const session_entity_1 = require("./entities/session.entity");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -40,6 +42,8 @@ AppModule = __decorate([
                     user_entity_1.User,
                     company_entity_1.Company,
                     survey_entity_1.Survey,
+                    answer_entity_1.Answer,
+                    session_entity_1.Session,
                 ],
                 synchronize: true,
             }),
@@ -58,6 +62,7 @@ AppModule = __decorate([
             answer_module_1.AnswerModule,
             company_module_1.CompanyModule,
             user_module_1.UserModule,
+            typeorm_1.TypeOrmModule.forFeature([session_entity_1.Session]),
         ],
         controllers: [app_controller_1.AppController],
         providers: [

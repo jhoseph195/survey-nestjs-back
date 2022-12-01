@@ -70,11 +70,15 @@ let SurveyService = class SurveyService {
         return (0, http_responses_interface_1.successResponse)(200, 'Éxito', response);
     }
     async createSurvey(bodyDTO) {
-        const response = await this.surveysRepository.insert(Object.assign({}, bodyDTO));
+        const data = Object.assign(Object.assign({}, bodyDTO), { company: { id: bodyDTO.companyId } });
+        delete data.companyId;
+        const response = await this.surveysRepository.insert(data);
         return (0, http_responses_interface_1.successResponse)(200, 'Éxito', response);
     }
     async putSurvey(id, bodyDTO) {
-        const response = await this.surveysRepository.update(id, Object.assign({}, bodyDTO));
+        const data = Object.assign(Object.assign({}, bodyDTO), { company: { id: bodyDTO.companyId } });
+        delete data.companyId;
+        const response = await this.surveysRepository.update(id, data);
         return (0, http_responses_interface_1.successResponse)(200, 'Éxito', response);
     }
     async deleteSurvey(id) {

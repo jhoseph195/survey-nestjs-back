@@ -70,13 +70,17 @@ export class SurveyService {
     }
 
     async createSurvey(@Body() bodyDTO: PostSurveysDto) {
-        const response = await this.surveysRepository.insert({...bodyDTO});
+        const data = {...bodyDTO, company: {id: bodyDTO.companyId}};
+        delete data.companyId;
+        const response = await this.surveysRepository.insert(data);
         
         return successResponse(200, 'Éxito', response);
     }
 
     async putSurvey(id: number, @Body() bodyDTO: PostSurveysDto) {
-        const response = await this.surveysRepository.update(id, {...bodyDTO});
+        const data = {...bodyDTO, company: {id: bodyDTO.companyId}};
+        delete data.companyId;
+        const response = await this.surveysRepository.update(id, data);
         
         return successResponse(200, 'Éxito', response);
     }

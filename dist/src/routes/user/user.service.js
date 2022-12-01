@@ -112,6 +112,7 @@ let UserService = class UserService {
         if (bodyDTO.password && bodyDTO.password.trim() == '') {
             delete data.password;
         }
+        console.log(data);
         const response = await this.usersRepository.update(id, data);
         return (0, http_responses_interface_1.successResponse)(200, 'Éxito', response);
     }

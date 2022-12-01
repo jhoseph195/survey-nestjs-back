@@ -122,6 +122,8 @@ export class UserService {
             delete data.password;
         }
 
+        console.log(data)
+
         const response = await this.usersRepository.update(id, data);
         
         return successResponse(200, 'Éxito', response);

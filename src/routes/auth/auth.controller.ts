@@ -20,9 +20,8 @@ export class AuthController {
 
     @Post('logout')
     @ApiBearerAuth('access-token')
-    logout(@Req() req: Request, @Res()res: Response) {
-      req.session.destroy(() => {
-        return res.status(200).json(successResponse(200, 'Éxito', {}))
-      })
+    async logout(@Req() req: Request, @Res()res: Response) {
+      const response: ErroredResponse | SuccessResponse = await this.authService.logout(req);
+      return res.status(response.status).json(response);
     }
 }

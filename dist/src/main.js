@@ -9,7 +9,7 @@ async function bootstrap() {
     app.enableCors({
         origin: '*',
         methods: 'GET, PUT, POST, DELETE',
-        allowedHeaders: 'Content-Type, Authorization',
+        allowedHeaders: '*',
     });
     await app.listen(process.env.NEST_PORT).then(() => {
         console.log(`Running on port ${process.env.NEST_PORT}`);

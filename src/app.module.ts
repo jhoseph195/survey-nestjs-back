@@ -14,6 +14,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { SessionValidatorGuard } from './guards/session-validator/session-validator.guard';
 import { Company } from './entities/company.entity';
 import { Survey } from './entities/survey.entity';
+import { Answer } from './entities/answer.entity';
+import { Session } from './entities/session.entity';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { Survey } from './entities/survey.entity';
         User,
         Company,
         Survey,
+        Answer,
+        Session,
       ],
       synchronize: true,
     }),
@@ -47,6 +51,7 @@ import { Survey } from './entities/survey.entity';
     AnswerModule,
     CompanyModule,
     UserModule,
+    TypeOrmModule.forFeature([Session]),
   ],
   controllers: [AppController],
   providers: [

@@ -20,9 +20,12 @@ const typeorm_2 = require("typeorm");
 const user_entity_1 = require("../../entities/user.entity");
 const js_sha256_1 = require("js-sha256");
 const http_responses_interface_1 = require("../../schemas/http-responses.interface");
+const session_entity_1 = require("../../entities/session.entity");
+const moment = require("moment");
 let AuthService = class AuthService {
-    constructor(usersRepository) {
+    constructor(usersRepository, sessionsRepository) {
         this.usersRepository = usersRepository;
+        this.sessionsRepository = sessionsRepository;
     }
     async login(bodyDTO, request) {
         const user = await this.usersRepository.findOne({
@@ -35,12 +38,16 @@ let AuthService = class AuthService {
                 isDeleted: false
             }
         });
-        delete user.password;
         if (user) {
+            delete user.password;
             if ((bodyDTO.origin == auth_dto_1.EOrigin.WEB && user.type != user_entity_1.EType.CAPTURIST) || bodyDTO.origin == auth_dto_1.EOrigin.APP) {
-                request.session['user'] = user;
-                request.session['origin'] = bodyDTO.origin;
-                return (0, http_responses_interface_1.successResponse)(200, 'Éxito', { token: request.sessionID });
+                const token = (0, js_sha256_1.sha256)(request.sessionID);
+                await this.sessionsRepository.insert({
+                    token,
+                    expires: new Date(moment().add(1, 'days').format()),
+                    user: { id: user.id }
+                });
+                return (0, http_responses_interface_1.successResponse)(200, 'Éxito', Object.assign(Object.assign({}, user), { token }));
             }
             else {
                 return (0, http_responses_interface_1.erroredResponse)(403, {}, 'No tienes los permisos necesarios para ingresar al sistema');
@@ -48,11 +55,19 @@ let AuthService = class AuthService {
         }
         return (0, http_responses_interface_1.erroredResponse)(403, {}, 'Credenciales incorrectas');
     }
+    async logout(req) {
+        let token = req.headers.authorization || req.headers.Authorization;
+        token = token.replace('Bearer ', '');
+        await this.sessionsRepository.delete({ token });
+        return (0, http_responses_interface_1.successResponse)(200, 'Éxito', {});
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(session_entity_1.Session)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map
